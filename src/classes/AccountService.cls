@@ -15,11 +15,15 @@ public with sharing class AccountService {
 
         updateContacts(contactsToUpdate);
     }
-//список до двох
+
+
     private static Map<Id, List<Contact>> generateContactsByAccountIdMap(List<Account> Accounts) {
+
+       List<Account> FirstTwoAccounts = leaveFirstTwoElementsFromList(Accounts);
+
         Map<Id, List<Contact>> contactsByAccountId  = new Map<Id, List<Contact>>();
 
-        for (Contact cont : selectAccountsByID(Accounts)) {
+        for (Contact cont : selectAccountsByID(FirstTwoAccounts)) {
             if (contactsByAccountId.containsKey(cont.AccountId)) {
                 contactsByAccountId.get(cont.AccountId).add(cont);
             } else {
@@ -27,6 +31,13 @@ public with sharing class AccountService {
             }
         }
         return contactsByAccountId;
+    }
+
+    public static List<Account> leaveFirstTwoElementsFromList (List<Account> AllAccounts){
+        List<Account> firstTwoAccounts = new List<Account>();
+        firstTwoAccounts.add(AllAccounts.get(0));
+        firstTwoAccounts.add(AllAccounts.get(1));
+        return firstTwoAccounts;
     }
 
     private static List<Contact> generateContactsToUpdateList(Map<Id, List<Contact>> contactsByAccountId) {
