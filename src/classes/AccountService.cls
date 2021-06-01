@@ -19,12 +19,11 @@ public with sharing class AccountService {
 
     private static Map<Id, List<Contact>> generateContactsByAccountIdMap(List<Account> Accounts) {
 
-       List<Account> FirstTwoAccounts = leaveFirstTwoElementsFromList(Accounts);
-
         Map<Id, List<Contact>> contactsByAccountId  = new Map<Id, List<Contact>>();
 
-        for (Contact cont : selectAccountsByID(FirstTwoAccounts)) {
-            if (contactsByAccountId.containsKey(cont.AccountId)) {
+        for (Contact cont : selectAccountsByID(Accounts)) {
+            if (contactsByAccountId.containsKey(cont.AccountId)
+                    && contactsByAccountId.size()<2) {
                 contactsByAccountId.get(cont.AccountId).add(cont);
             } else {
                 contactsByAccountId.put(cont.AccountId, new List<Contact>{cont});
@@ -33,12 +32,7 @@ public with sharing class AccountService {
         return contactsByAccountId;
     }
 
-    public static List<Account> leaveFirstTwoElementsFromList (List<Account> AllAccounts){
-        List<Account> firstTwoAccounts = new List<Account>();
-        firstTwoAccounts.add(AllAccounts.get(0));
-        firstTwoAccounts.add(AllAccounts.get(1));
-        return firstTwoAccounts;
-    }
+
 
     private static List<Contact> generateContactsToUpdateList(Map<Id, List<Contact>> contactsByAccountId) {
         List<Contact> contactsToUpdate = new List<Contact>();
