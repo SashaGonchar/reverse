@@ -2,23 +2,35 @@ public with sharing class AccountService {
 
     private static final Integer NUMBER_OF_UPDATED_CONTACTS = 2;
 
-    public void reverseNameOnAccounts(List<Account> newAccounts) {
+    public static void reverseNameOnAccounts(List<Account> newAccounts) {
         for (Account newAccount : newAccounts) {
             newAccount.Name = newAccount.Name.reverse();
         }
     }
 
-    public void changeRelatedContactNames(List<Account> newAccounts) {
-        List<Contact> contactsToUpdate = new List<Contact>();
+    public static void changeRelatedContactNames(List<Account> Accounts) {
+        Map<Id, List<Contact>> contactsByAccountId = generateContactsByAccountIdMap(Accounts);
 
+        List<Contact> contactsToUpdate = generateContactsToUpdateList(contactsByAccountId);
+
+        updateContacts(contactsToUpdate);
+    }
+//список до двох
+    private static Map<Id, List<Contact>> generateContactsByAccountIdMap(List<Account> Accounts) {
         Map<Id, List<Contact>> contactsByAccountId  = new Map<Id, List<Contact>>();
-        for (Contact cont : contactsToUpdate(newAccounts)) {
+
+        for (Contact cont : selectAccountsByID(Accounts)) {
             if (contactsByAccountId.containsKey(cont.AccountId)) {
                 contactsByAccountId.get(cont.AccountId).add(cont);
             } else {
                 contactsByAccountId.put(cont.AccountId, new List<Contact>{cont});
             }
         }
+        return contactsByAccountId;
+    }
+
+    private static List<Contact> generateContactsToUpdateList(Map<Id, List<Contact>> contactsByAccountId) {
+        List<Contact> contactsToUpdate = new List<Contact>();
 
         for (Id accountId : contactsByAccountId.keySet()) {
             List<Contact> relatedContacts = contactsByAccountId.get(accountId);
@@ -35,18 +47,19 @@ public with sharing class AccountService {
                             contact
                     );
                 }
-
                 i++;
             }
-
         }
+        return contactsToUpdate;
+    }
 
+    private static void updateContacts(List<Contact> contactsToUpdate) {
         if (contactsToUpdate.size() > 0) {
             update contactsToUpdate;
         }
     }
 
-    private List<Contact> contactsToUpdate(List<Account> Accounts) {
+    private static List<Contact> selectAccountsByID(List<Account> Accounts) {
         return [
                 SELECT Id, CreatedDate, Account.Owner.FirstName, Account.Owner.LastName, AccountId
                 FROM Contact

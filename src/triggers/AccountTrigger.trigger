@@ -7,11 +7,8 @@ trigger AccountTrigger on Account (before insert, before update, after insert, a
         when BEFORE_UPDATE {
             AccountTriggerHandler.beforeUpdate(Trigger.new);
         }
-        when AFTER_INSERT {
-            AccountTriggerHandler.afterInsert(Trigger.new);
-        }
         when AFTER_UPDATE {
-            AccountTriggerHandler.afterUpdate(Trigger.new, Trigger.oldMap);
+            AccountTriggerHandler.afterUpdate(Trigger.new);
         }
         when else {
             System.debug('Not Used Trigger Context.');
