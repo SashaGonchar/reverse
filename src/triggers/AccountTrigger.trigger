@@ -14,7 +14,7 @@ trigger AccountTrigger on Account (before insert, before update, after insert, a
             AccountTriggerHandler.afterUpdate(Trigger.new, Trigger.oldMap);
         }
         when else {
-            System.debug('Not Used Trigger Context.');
+            System.debug('Not Used Trigger Context12.');
         }
     }
 }
