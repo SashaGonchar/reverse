@@ -1,5 +1,5 @@
 public with sharing class AccountService {
-
+    
     public static void reverseNameOnAccounts(List<Account> newAccounts) {
         for (Account newAccount : newAccounts) {
             newAccount.Name = newAccount.Name.reverse();
@@ -13,7 +13,7 @@ public with sharing class AccountService {
 
         updateContacts(contactsToUpdate);
     }
-
+    
     private static Map<Id, List<Contact>> generateContactsByAccountIdMap(List<Account> Accounts) {
 
         Map<Id, List<Contact>> contactsByAccountId  = new Map<Id, List<Contact>>();
@@ -29,23 +29,23 @@ public with sharing class AccountService {
         return contactsByAccountId;
     }
 
+
+
     private static List<Contact> generateContactsToUpdateList(Map<Id, List<Contact>> contactsByAccountId) {
         List<Contact> contactsToUpdate = new List<Contact>();
 
         for (Id accountId : contactsByAccountId.keySet()) {
             List<Contact> relatedContacts = contactsByAccountId.get(accountId);
-            Integer i = 0;
 
             for (Contact contact : relatedContacts) {
                     contact.FirstName = contact.Account.Owner.FirstName;
                     contact.LastName = contact.Account.Owner.LastName;
+
                     contactsToUpdate.add(
                             contact
                     );
                 }
-                i++;
-
-        }
+            }
         return contactsToUpdate;
     }
 
