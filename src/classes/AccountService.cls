@@ -1,7 +1,5 @@
 public with sharing class AccountService {
 
-    private static final Integer NUMBER_OF_UPDATED_CONTACTS = 2;
-
     public static void reverseNameOnAccounts(List<Account> newAccounts) {
         for (Account newAccount : newAccounts) {
             newAccount.Name = newAccount.Name.reverse();
@@ -16,12 +14,11 @@ public with sharing class AccountService {
         updateContacts(contactsToUpdate);
     }
 
-
     private static Map<Id, List<Contact>> generateContactsByAccountIdMap(List<Account> Accounts) {
 
         Map<Id, List<Contact>> contactsByAccountId  = new Map<Id, List<Contact>>();
 
-        for (Contact cont : selectAccountsByID(Accounts)) {
+        for (Contact cont : selectContactsByAccountIds(Accounts)) {
             if (contactsByAccountId.containsKey(cont.AccountId)
                     && contactsByAccountId.size()<2) {
                 contactsByAccountId.get(cont.AccountId).add(cont);
@@ -32,8 +29,6 @@ public with sharing class AccountService {
         return contactsByAccountId;
     }
 
-
-
     private static List<Contact> generateContactsToUpdateList(Map<Id, List<Contact>> contactsByAccountId) {
         List<Contact> contactsToUpdate = new List<Contact>();
 
@@ -42,18 +37,14 @@ public with sharing class AccountService {
             Integer i = 0;
 
             for (Contact contact : relatedContacts) {
-                if (i == NUMBER_OF_UPDATED_CONTACTS) {
-                    break;
-                } else {
                     contact.FirstName = contact.Account.Owner.FirstName;
                     contact.LastName = contact.Account.Owner.LastName;
-
                     contactsToUpdate.add(
                             contact
                     );
                 }
                 i++;
-            }
+
         }
         return contactsToUpdate;
     }
@@ -64,7 +55,7 @@ public with sharing class AccountService {
         }
     }
 
-    private static List<Contact> selectAccountsByID(List<Account> Accounts) {
+    private static List<Contact> selectContactsByAccountIds(List<Account> Accounts) {
         return [
                 SELECT Id, CreatedDate, Account.Owner.FirstName, Account.Owner.LastName, AccountId
                 FROM Contact
